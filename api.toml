@@ -1,0 +1,5 @@
+[DEFAULT]
+default_key = "sk-ELU04Pbyk63Yem8YD074D79cFd4b446dBe8eAf3fF4C7E6A9"
+default_base = "https://api.gpt.ge/v1"
+default_model = "gpt-4o-mini"
+default_temperature = 0.5

@@ -1,0 +1,2 @@
+[server]
+maxUploadSize = 20480  # 设置为你想要的最大文件上传大小（以MB为单位）
