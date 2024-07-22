@@ -83,17 +83,18 @@ def home_settings(st,config):
     with col2:
         area2 = st.container(height=450)
         with area2:
+            default_mode =  config["DEFAULT"]["default_model"]
+            model_list = ['gpt-4o-mini','gpt-4o','gpt-4-0125-preview',
+                          'gpt-4-32k','gpt-4-0613','gpt-3.5-turbo','gpt-3.5-turbo-instruct'
+                          ,'gpt-3.5-turbo-16k'
+                          ]
+
             default_model = sac.segmented(
                 items=[
-                    sac.SegmentedItem(label='gpt-4o-mini'),
-                    sac.SegmentedItem(label='gpt-4o'),
-                    sac.SegmentedItem(label='gpt-4-0125-preview'),
-                    sac.SegmentedItem(label='gpt-4-32k'),
-                    sac.SegmentedItem(label='gpt-4-0613'),
-                    sac.SegmentedItem(label='gpt-3.5-turbo'),
-                    sac.SegmentedItem(label='gpt-3.5-turbo-instruct'),
-                    sac.SegmentedItem(label='gpt-3.5-turbo-16k'),
-                ], label='模型选择', align='center', direction="vertical", radius='lg', use_container_width=True,
+                    sac.SegmentedItem(label=model_name) for model_name in model_list
+                ], label='模型选择',
+                align='center', direction="vertical", radius='lg',
+                use_container_width=True,index=model_list.index(default_mode)
             )
             st.session_state.default_model = default_model
     st.write("")

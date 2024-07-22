@@ -88,6 +88,101 @@ def code_assistant(st,config):
         # messages.chat_message("assistant").write_stream(msg)
 
 
+"""
+在项目对话助手这里，我们需要处理两个东西：
+st.session_state.get("current_link_file_item")
+st.session_state.get("current_select_fileItem")
+我们需要这两个玩意来构建我们的prompt
+"""
+# 动态构建对应的prompt
+def build_assistant_prompt():
+    current_link_file_item:list = st.session_state.get("current_link_file_item")
+    current_select_fileItem = st.session_state.get("current_select_fileItem")
+    dependent = """"""
+    for link_item in current_link_file_item:
+        dependent+=f"代码文件：{link_item.name}+\n"
+        dependent+=f"代码内容：\n```\n{link_item.content}\n```\n"
+
+    system_prompt = f"""
+    你是一个AI助手，你需要结合下面给你的代码来回答用户的问题。下面是我们的代码
+    当前查看代码{current_select_fileItem.name}
+    代码内容：
+    ```
+    {current_select_fileItem.content}
+    ```
+    对应的依赖代码
+    {dependent}
+    ---------
+    请你按照上面的代码内容来回答用户的问题。
+    """
+    return system_prompt
+
+# 项目助手(这里需要注意的是，我们的prompt上下文需要实时变动)
+def project_assistant(st,config):
+    # 项目助手对应的聊天容器
+    project_assistant_messages = st.container(height=470)
+    if "project_assistant_messages" not in st.session_state:
+        st.session_state["project_assistant_messages"] = [
+            {"role": "assistant", "content": "你好我是MatchAI的项目代码助手，很高兴能够帮助到您🚓！"}
+        ]
+
+    # 项目助手对话的记录
+    for msg in st.session_state.project_assistant_messages:
+        project_assistant_messages.chat_message(msg["role"]).write(msg["content"])
+
+    # 拿到LLM相关的设置
+    default_key = config["DEFAULT"]["default_key"]
+    default_base = config["DEFAULT"]["default_base"]
+    default_model = config["DEFAULT"]["default_model"]
+    default_temperature = config["DEFAULT"]["default_temperature"]
+    if(default_base!=None and default_model!=""):
+        placeholder = "有什么我可以帮你的么？😀"
+    else:
+        placeholder = "有什么我可以帮你的么？😀(请先设置默认大模型KEY)"
+
+    # 如果当前可以拿到当前选中的文件的Item（是支持的，那么我们就可以正常执行）
+    if st.session_state.get("current_link_file_item"):
+        if prompt := st.chat_input(placeholder=placeholder):
+            client = OpenAI(api_key=default_key,
+                            base_url=default_base,
+
+                            )
+            # 添加用户的对话记录
+            st.session_state.project_assistant_messages.append({"role": "user", "content": prompt})
+            # 在容器当中展示用户的对话
+            project_assistant_messages.chat_message("user").write(prompt)
+            response = client.chat.completions.create(
+                model=default_model,
+                temperature=default_temperature,
+                messages=[
+                    {"role": "system",
+                     "content": build_assistant_prompt()},
+                    {"role": "user", "content": prompt}
+                ])
+            msg = response.choices[0].message.content
+            # 添加模型返回结果（在对话记录当中）
+            st.session_state.project_assistant_messages.append({"role": "assistant", "content": msg})
+            # 在对话容器添加对应的响应内容
+            with project_assistant_messages.chat_message("assistant"):
+                placeholder = st.empty()
+                full_response = ''
+                for item in msg:
+                    full_response += item
+                    time.sleep(0.01)
+                    placeholder.markdown(full_response)
+                placeholder.markdown(full_response)
+            # messages.chat_message("assistant").write_stream(msg)
+    else:
+        # 这里的提示不加入历史对话记录当中去
+        with project_assistant_messages.chat_message("assistant"):
+            placeholder = st.empty()
+            full_response = ''
+            msg = "请选择对应的项目文件进行对话哦~如果您有任何疑问请前往【首页】询问小助手😄"
+            for item in msg:
+                full_response += item
+                time.sleep(0.01)
+                placeholder.markdown(full_response)
+            placeholder.markdown(full_response)
 
 def filter_directories(dir_name: str):
     for file in st.session_state.exclude_directories:

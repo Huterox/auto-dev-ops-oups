@@ -269,3 +269,7 @@ def assistantUI():
                               banner=False,
                               icon=True, closable=True)
 
+            ##################### 项目问答对话模块 ####################
+            # 这里的重点是，拿到当前选中的模块，和相关联的模块，发送LLM进行问答关联
+            # 当前这里需要优化的点是，没有对代码段落进行分段处理，而是直接将完整代码给到
+            project_assistant(st,config)
