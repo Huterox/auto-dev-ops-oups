@@ -75,8 +75,12 @@ def code_assistant(st,config):
                  "content": "你是一个专业的代码专家，你叫Match，精通任何代码，请你帮助用户回答和代码相关的问题。\n"},
                 {"role": "user", "content": prompt}
             ])
-        msg = response.choices[0].message.content
-        st.session_state.messages_code_assistant.append({"role": "assistant", "content": msg})
+        try:
+            msg = response.choices[0].message.content
+            st.session_state.messages_code_assistant.append({"role": "assistant", "content": msg})
+        except Exception as e:
+            print(e)
+            msg = "抱歉，出现异常，请稍后再试~"
         with messages_code_assistant.chat_message("assistant"):
             placeholder = st.empty()
             full_response = ''
@@ -159,9 +163,13 @@ def project_assistant(st,config):
                      "content": build_assistant_prompt()},
                     {"role": "user", "content": prompt}
                 ])
-            msg = response.choices[0].message.content
+            try:
+                msg = response.choices[0].message.content
+                st.session_state.project_assistant_messages.append({"role": "assistant", "content": msg})
+            except Exception as e:
+                print(e)
+                msg = "抱歉，出现异常，请稍后再试~"
             # 添加模型返回结果（在对话记录当中）
-            st.session_state.project_assistant_messages.append({"role": "assistant", "content": msg})
             # 在对话容器添加对应的响应内容
             with project_assistant_messages.chat_message("assistant"):
                 placeholder = st.empty()
@@ -202,32 +210,29 @@ def filter_allow_file(file_name: str):
             return True
     return False
 
-class FileItem(object):
-    def __init__(self):
-        # 文件名字
-        self.name = ''
-        # 文件路径
-        self.path = ''
-        # 子文件（一般是文件夹才有）
-        self.children = []
-        # 是不是文件夹
-        self.is_dir = False
-        # 文件类型
-        self.type = ""
-        # 文件内容（方便关联到依赖）
-        self.content = ""
 
-    def __str__(self) -> str:
-        return f"{self.name} " \
-               f"{self.path} " \
-               f"{self.is_dir} " \
-               f"{self.type} " \
-               f"content len:{len(self.content)}"
+class FileItem(object):
+    def __init__(self, name='', path='', is_dir=False, type="", content=""):
+        self.name = name
+        self.path = path
+        self.children = []  # 子文件列表
+        self.is_dir = is_dir  # 是否是文件夹
+        self.type = type     # 文件类型
+        self.content = content  # 文件内容
+
+    def __hash__(self):
+        # 这里我们使用name和path作为哈希的基础
+        # 确保这两个属性不会改变，否则哈希值也会改变
+        return hash((self.name, self.path))
 
     def __eq__(self, other):
+        # 确保如果两个FileItem对象的name和path相同，则它们被视为相等
         if isinstance(other, FileItem):
-            return self.name == other.name and self.path == other.path and self.is_dir == other.is_dir and self.type == other.type
+            return (self.name == other.name) and (self.path == other.path)
         return False
+
+    def __str__(self) -> str:
+        return f"{self.name} {self.path} {self.is_dir} {self.type} content len:{len(self.content)}"
 
 
 """

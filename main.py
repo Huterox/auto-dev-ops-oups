@@ -5,6 +5,7 @@ from webui.Home import homeUI
 from webui.RequirementsCollation import collationUI
 from webui.CodingAssistant import assistantUI
 from webui.AutoDevOps import autoUI
+from webui.SQLAssistant import sqlAssistantUI
 
 st.set_page_config(
     page_title="MatchAI-智码 v0.1",
@@ -21,7 +22,7 @@ with st.sidebar.container():
             sac.MenuItem('首页', icon='house-fill'),
             sac.MenuItem('编码助手', icon='robot',children=[
                 sac.MenuItem('编码问答', icon='chat-left-text'),
-                sac.MenuItem('项目分析', icon='projector-fill'),
+                sac.MenuItem('SQL助手', icon='filetype-sql'),
                 sac.MenuItem('需求分析', icon='file-earmark-break'),
             ]),
             sac.MenuItem('系统生成', icon='alt',children=[
@@ -30,6 +31,7 @@ with st.sidebar.container():
             ]),
         ],
         key='menu',
+        color='blue',
         open_index=[1,2]
     )
     sac.divider(label='POWERED BY @Huterox', icon="lightning-charge", align='center', color='gray')
@@ -39,6 +41,7 @@ if __name__ == '__main__':
     menus_page = {
         "首页": homeUI,
         "编码问答": assistantUI,
+        "SQL助手": sqlAssistantUI,
         "需求分析": collationUI,
         "系统生成": autoUI,
     }

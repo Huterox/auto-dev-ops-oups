@@ -46,8 +46,11 @@ def home_assistant(st,doc,config):
                  "content": "你是一个基于下面内容的AI小助手，请基于下面的内容和自己的知识回答用户问题。\n" + doc},
                 {"role": "user", "content": prompt}
             ])
-        msg = response.choices[0].message.content
-        st.session_state.messages.append({"role": "assistant", "content": msg})
+        try:
+            msg = response.choices[0].message.content
+            st.session_state.messages.append({"role": "assistant", "content": msg})
+        except Exception as e:
+            msg = "抱歉，出现异常，请稍后再试~"
         with messages.chat_message("assistant"):
             placeholder = st.empty()
             full_response = ''

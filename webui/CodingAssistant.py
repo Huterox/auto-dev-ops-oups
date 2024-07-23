@@ -11,6 +11,7 @@ from base import current_dir_root
 from pluings.languageParse.typeLink import build_link_map, get_link_file
 from streamlit_agraph import agraph, Node, Edge, Config
 from webui.handler.assistantHandler import *
+from webui.handler.assistantHandler import exclude_file_name,exclude_directories
 
 def del_link_file_item(linked_node,current_select_fileItem,show_code_linked_item_tips_container):
     st.session_state.current_link_file_item.remove(linked_node)
