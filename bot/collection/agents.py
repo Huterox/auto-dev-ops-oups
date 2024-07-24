@@ -14,7 +14,7 @@ from bot.Bot import ChatBot
 
 class CollectionSummaryAgent(ChatBot):
 
-    def builder_system_prompt(self):
+    def __builder_system_prompt(self):
         sys_prompt = """
              您好，作为资深项目经理B，您将负责分析一段项目经理与用户之间的历史对话，并从中提取和总结项目需求。以下是您的任务指导和步骤：
              任务指导：
@@ -45,7 +45,7 @@ class CollectionSummaryAgent(ChatBot):
         return sys_prompt
 
 
-    def build_input(self,history):
+    def __build_input(self,history):
         input_prompt = """"""
         # 逆序
         input_prompt += "\n".join(
@@ -63,13 +63,13 @@ class CollectionSummaryAgent(ChatBot):
         :return:
         """
         # 构造系统提示词
-        sys_prompt = self.builder_system_prompt()
-        input_prompt = self.build_input(history)
+        sys_prompt = self.__builder_system_prompt()
+        input_prompt = self.__build_input(history)
         res = self.singleChat(sys_prompt,input_prompt)
         return res
 
 class CollectionQuestionAgent(ChatBot):
-    def builder_system_prompt(self):
+    def __builder_system_prompt(self):
         sys_prompt = """
         您好，作为项目经理或团队成员，您将负责从历史对话中提出问题，以帮助澄清和深化项目需求。以下是您的任务指导和步骤：
         任务指导：
@@ -99,14 +99,14 @@ class CollectionQuestionAgent(ChatBot):
         """
         return sys_prompt
 
-    def build_input(self,history):
+    def __build_input(self,history):
         input_prompt = """"""
         # 逆序
         input_prompt += "\n".join(
             [f"{'项目经理A' if item['role'] == 'assistant' else '用户'}:{item['content']}" for item in history[::-1]])
         return input_prompt
 
-    def get_summary(self,history:list):
+    def get_suggest(self,history:list):
         """
         :param history: [
             {"role": "assistant", "content": msg},
@@ -116,7 +116,7 @@ class CollectionQuestionAgent(ChatBot):
         :return:
         """
         # 构造系统提示词
-        sys_prompt = self.builder_system_prompt()
-        input_prompt = self.build_input(history)
+        sys_prompt = self.__builder_system_prompt()
+        input_prompt = self.__build_input(history)
         res = self.singleChat(sys_prompt,input_prompt)
         return res
