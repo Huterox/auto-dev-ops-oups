@@ -67,15 +67,15 @@ def code_assistant(st,config):
                         )
         st.session_state.messages_code_assistant.append({"role": "user", "content": prompt})
         messages_code_assistant.chat_message("user").write(prompt)
-        response = client.chat.completions.create(
-            model=default_model,
-            temperature=default_temperature,
-            messages=[
-                {"role": "system",
-                 "content": "你是一个专业的代码专家，你叫Match，精通任何代码，请你帮助用户回答和代码相关的问题。\n"},
-                {"role": "user", "content": prompt}
-            ])
         try:
+            response = client.chat.completions.create(
+                model=default_model,
+                temperature=default_temperature,
+                messages=[
+                    {"role": "system",
+                     "content": "你是一个专业的代码专家，你叫Match，精通任何代码，请你帮助用户回答和代码相关的问题。\n"},
+                    {"role": "user", "content": prompt}
+                ])
             msg = response.choices[0].message.content
             st.session_state.messages_code_assistant.append({"role": "assistant", "content": msg})
         except Exception as e:
@@ -155,15 +155,15 @@ def project_assistant(st,config):
             st.session_state.project_assistant_messages.append({"role": "user", "content": prompt})
             # 在容器当中展示用户的对话
             project_assistant_messages.chat_message("user").write(prompt)
-            response = client.chat.completions.create(
-                model=default_model,
-                temperature=default_temperature,
-                messages=[
-                    {"role": "system",
-                     "content": build_assistant_prompt()},
-                    {"role": "user", "content": prompt}
-                ])
             try:
+                response = client.chat.completions.create(
+                    model=default_model,
+                    temperature=default_temperature,
+                    messages=[
+                        {"role": "system",
+                         "content": build_assistant_prompt()},
+                        {"role": "user", "content": prompt}
+                    ])
                 msg = response.choices[0].message.content
                 st.session_state.project_assistant_messages.append({"role": "assistant", "content": msg})
             except Exception as e:

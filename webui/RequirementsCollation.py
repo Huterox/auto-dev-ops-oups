@@ -69,7 +69,7 @@ def collationUI():
                         placeholder.markdown(full_response)
                     placeholder.markdown(full_response)
 
-        # ######################################################################################
+        #######################################################################################
         st.session_state["collation_suggest_open"] = sac.switch(
             label='智能提示', align='center', size='md',
             value=st.session_state.get("collation_suggest_open", False),
@@ -125,15 +125,16 @@ def collationUI():
             # 添加对话历史信息
             st.session_state.collation_main_messages.append({"role": "user", "content": prompt})
             collation_main_container.chat_message("user").write(prompt)
-            response = client.chat.completions.create(
-                model=default_model,
-                temperature=default_temperature,
-                messages=[
-                    {"role": "system",
-                     "content": "你是一个专业的软件开发项目经理，接下来你将基于用户的需求来与用户进行对接\n"},
-                    {"role": "user", "content": prompt}
-                ])
+
             try:
+                response = client.chat.completions.create(
+                    model=default_model,
+                    temperature=default_temperature,
+                    messages=[
+                        {"role": "system",
+                         "content": "你是一个专业的软件开发项目经理，接下来你将基于用户的需求来与用户进行对接\n"},
+                        {"role": "user", "content": prompt}
+                    ])
                 msg = response.choices[0].message.content
                 st.session_state.collation_main_messages.append({"role": "assistant", "content": msg})
                 """
@@ -182,5 +183,10 @@ def collationUI():
                 time.sleep(0.01)
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
-        st.audio(data=None)
-        st.text_input("请输入音频文件地址", key="collation_audio_input")
+        if(st.session_state.get("collation_audio_input")):
+            st.audio(data=None)
+        else:
+            st.markdown("`暂未填写音频文件地址`")
+        audio_input_path = st.text_input("请输入音频文件地址", key="collation_audio_input")
+        if audio_input_path:
+            st.audio(data=audio_input_path)

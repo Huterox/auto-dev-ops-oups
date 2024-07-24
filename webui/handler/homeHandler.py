@@ -37,15 +37,15 @@ def home_assistant(st,doc,config):
                         )
         st.session_state.messages.append({"role": "user", "content": prompt})
         messages.chat_message("user").write(prompt)
-        response = client.chat.completions.create(
-            model=default_model,
-            temperature=default_temperature,
-            messages=[
-                {"role": "system",
-                 "content": "你是一个基于下面内容的AI小助手，请基于下面的内容和自己的知识回答用户问题。\n" + doc},
-                {"role": "user", "content": prompt}
-            ])
         try:
+            response = client.chat.completions.create(
+                model=default_model,
+                temperature=default_temperature,
+                messages=[
+                    {"role": "system",
+                     "content": "你是一个基于下面内容的AI小助手，请基于下面的内容和自己的知识回答用户问题。\n" + doc},
+                    {"role": "user", "content": prompt}
+                ])
             msg = response.choices[0].message.content
             st.session_state.messages.append({"role": "assistant", "content": msg})
         except Exception as e:

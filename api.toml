@@ -9,6 +9,16 @@ openai_whisper_api = true
 faster_whisper_model_default = "tiny"
 faster_whisper_model_local = false
 faster_whisper_model_local_path = "F:/new/model/tiny"
-gpu = false
+gpu = true
 vad = false
 lang = "自动识别"
+
+[MORE]
+min_vad = 500
+beam_size = 5
+whisper_prompt = "Don’t make each line too long."
+temperature = 0.8
+crf = 23
+quality = "medium"
+ffmpeg = "libx264"
+log = "error"

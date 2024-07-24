@@ -81,15 +81,15 @@ def sql_chat_assistant(st,config):
                         )
         st.session_state.sql_chat_assistant_messages.append({"role": "user", "content": prompt})
         sql_chat_assistant_messages.chat_message("user").write(prompt)
-        response = client.chat.completions.create(
-            model=default_model,
-            temperature=default_temperature,
-            messages=[
-                {"role": "system",
-                 "content": build_query_prompt(st,sql_assistant_query_model)},
-                {"role": "user", "content": prompt}
-            ])
         try:
+            response = client.chat.completions.create(
+                model=default_model,
+                temperature=default_temperature,
+                messages=[
+                    {"role": "system",
+                     "content": build_query_prompt(st, sql_assistant_query_model)},
+                    {"role": "user", "content": prompt}
+                ])
             msg = response.choices[0].message.content
             st.session_state.sql_chat_assistant_messages.append({"role": "assistant", "content": msg})
         except Exception as e:
