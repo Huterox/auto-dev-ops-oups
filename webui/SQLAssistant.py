@@ -111,10 +111,10 @@ def sqlAssistantUI():
 
         with sql_assistant_c0:
             # 设置当前询问sql数据的时候需要什么模式（全局模式，就是把整个数据库作为预料，反正就是选中哪个就哪个）
-            sac.switch(label='全局模式', align='center', size='md',
-                       value=st.session_state.get("sql_assistant_query_model",True),
-                       key="sql_assistant_query_model")
-
+            st.session_state["sql_assistant_query_model"] = sac.switch(
+                label='全局模式', align='center', size='md',
+                value=st.session_state.get("sql_assistant_query_model",True),
+            )
             # 在这里展示出我们当前的数据库有哪些表
             table_list: list[str] = sqlAssistantHelper.get_all_tables()
             table_list_container = st.container(height=450)

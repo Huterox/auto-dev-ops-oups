@@ -34,7 +34,6 @@ def home_assistant(st,doc,config):
     if prompt := st.chat_input(placeholder=placeholder):
         client = OpenAI(api_key=default_key,
                         base_url=default_base,
-
                         )
         st.session_state.messages.append({"role": "user", "content": prompt})
         messages.chat_message("user").write(prompt)
