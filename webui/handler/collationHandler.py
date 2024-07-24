@@ -6,10 +6,8 @@
 @Copyright：©2018-2024 awesome!
 """
 import time
-
 import toml
-
-from base import current_dir_root
+from base import current_dir_root, whisper_tiny_dict
 from bot.collection.agents import CollectionSummaryAgent, CollectionQuestionAgent
 from pluings.whisper.transUtils import faster_whisper_result
 
@@ -18,13 +16,17 @@ from pluings.whisper.transUtils import faster_whisper_result
 """
 import os
 
-
-def get_content(st):
-
+"""
+解析音频的内容
+"""
+def get_audio_content(audio_file):
+    import os
+    os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
     video_config = toml.load(os.path.join(current_dir_root, "api.toml"))
     faster_whisper_model = video_config["WHISPER"]["faster_whisper_model_default"]  # faster_whisper配置
     faster_whisper_local = video_config["WHISPER"]["faster_whisper_model_local"]  # 本地模型加载
-    faster_whisper_local_path = video_config["WHISPER"]["faster_whisper_model_local_path"]  # 本地模型路径
+    # faster_whisper_local_path = video_config["WHISPER"]["faster_whisper_model_local_path"]  # 本地模型路径
+    faster_whisper_local_path = whisper_tiny_dict # tiny版本的模型在本地设置当中就写好
     whisper_prompt_setting = video_config["MORE"]["whisper_prompt"]
     temperature_setting = video_config["MORE"]["temperature"]
     gpu_setting = video_config["WHISPER"]["gpu"]
@@ -37,8 +39,6 @@ def get_content(st):
     model = faster_whisper_model
     if faster_whisper_local:
         model = faster_whisper_local_path
-
-    audio_file = st.session_state.audio_file_path
 
     """
         segments_dict = {
@@ -58,11 +58,14 @@ def get_content(st):
         ]
     }
     """
+    try:
+        result = faster_whisper_result(audio_file, device, model, whisper_prompt_setting, temperature_setting,
+                                       vad_setting, lang_setting, beam_size_setting, min_vad_setting)
 
-    result = faster_whisper_result(audio_file, device, model, whisper_prompt_setting, temperature_setting,
-                                   vad_setting, lang_setting, beam_size_setting, min_vad_setting)
-
-    return result
+        return result["text"]
+    except Exception as e:
+        print(e)
+        return "抱歉当前语音识别失败😣"
 
 """
 Get the summary of requirements by use the agent of CollectionSummaryAgent

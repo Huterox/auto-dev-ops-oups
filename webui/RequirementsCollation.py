@@ -14,7 +14,59 @@ import streamlit_antd_components as sac
 from openai import OpenAI
 import concurrent.futures
 from base import current_dir_root
-from webui.handler.collationHandler import getCollectionSummary, getCollectionSuggest
+from webui.handler.collationHandler import getCollectionSummary, getCollectionSuggest, get_audio_content
+
+
+@st.experimental_dialog('音频解析',)
+def audio_analysis():
+    audio_analysis_container = st.container(height=300)
+    with audio_analysis_container:
+        audio_path = st.session_state.get("collation_audio_input")
+        # 先过一下提示
+        if audio_path:
+            if os.path.exists(audio_path):
+                sac.alert(label='Tips',
+                          description='音频已加载',
+                          size=12,
+                          color='teal',
+                          banner=False,
+                          icon=True, closable=True)
+            else:
+                sac.alert(label='Tips',
+                          description='音频地址错误',
+                          size=12,
+                          color='yellow',
+                          banner=False,
+                          icon=True, closable=True)
+                return
+            # 之后在去解析音频
+            # 展示解析结果
+            sac.divider(label='`解析结果`', icon="lightning-charge", align='center', color='gray', key="5")
+            audio_res_analysis_container = st.container(height=130)
+            with audio_res_analysis_container:
+                with st.spinner('正在解析语音...'):
+                    with audio_res_analysis_container:
+                        res = get_audio_content(audio_path)
+                        placeholder = st.empty()
+                        full_response = ''
+                        for item in res:
+                            full_response += item
+                            time.sleep(0.005)
+                            placeholder.markdown(full_response)
+                        placeholder.markdown(full_response)
+
+
+        else:
+            sac.alert(label='Tips',
+                      description='请填写音频地址',
+                      size=12,
+                      color='yellow',
+                      banner=False,
+                      icon=True, closable=True)
+
+
+
+
 
 
 def collationUI():
@@ -183,10 +235,15 @@ def collationUI():
                 time.sleep(0.01)
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
-        if(st.session_state.get("collation_audio_input")):
-            st.audio(data=None)
+        audio_path = st.session_state.get("collation_audio_input")
+        if audio_path:
+            if os.path.exists(audio_path):
+                st.audio(data=audio_path)
+            else:
+                st.markdown("`音频地址错误`")
         else:
             st.markdown("`暂未填写音频文件地址`")
         audio_input_path = st.text_input("请输入音频文件地址", key="collation_audio_input")
-        if audio_input_path:
-            st.audio(data=audio_input_path)
+        if st.button("开始提取音频内容",type="primary"):
+            audio_analysis()
+

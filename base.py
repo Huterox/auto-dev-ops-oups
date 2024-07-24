@@ -15,8 +15,9 @@ from colorlog import ColoredFormatter
 current_dir_root = os.path.dirname(os.path.abspath(__file__))
 
 cache_dir_root = os.path.join(current_dir_root, "cache")
-model_dir_root = os.path.join(current_dir_root, "pluings/whisper/model")
+whisper_tiny_dict = os.path.join(current_dir_root, "pluings/whisper/model/tiny")
 docs_dir_root = os.path.join(current_dir_root,"docs")
+
 
 """
 ********************************
