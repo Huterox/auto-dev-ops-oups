@@ -50,7 +50,7 @@ def sqlAssistantUI():
             sql_assistant_connect_config["port"] = mysqlPORT
             mysqlUSERNAME = area.text_input("**USERNAME：**", value=sql_assistant_connect_config.get("username"))
             sql_assistant_connect_config["username"] = mysqlUSERNAME
-            mysqlPASSWORD = area.text_input("**USERNAME：**", type="password",value=sql_assistant_connect_config.get("password"))
+            mysqlPASSWORD = area.text_input("**PASSWORD：**", type="password",value=sql_assistant_connect_config.get("password"))
             sql_assistant_connect_config["password"] = mysqlPASSWORD
             mysqlDataBase = area.text_input("**DATABASE：**", value=sql_assistant_connect_config.get("database"))
             sql_assistant_connect_config["database"] = mysqlDataBase
@@ -137,12 +137,16 @@ def sqlAssistantUI():
             current_select_table_name = st.session_state.current_select_table_name
             if current_select_table_name:
                 # 展示当前选定的表的关系图
-                table_nodes = [Node(id=current_select_table_name,
-                                    label=current_select_table_name,
-                                    size=8, shape="square")]
+                table_nodes = []
                 # 添加节点
+
                 refer_nodes = sqlAssistantHelper.get_table_dependencies(current_select_table_name)
-                for node in refer_nodes:
+                all_nodes = refer_nodes[::]
+                all_nodes.append(current_select_table_name)
+                refer_nodes = list(set(refer_nodes))
+                all_nodes = list(set(all_nodes))
+
+                for node in all_nodes:
                     table_nodes.append(
                         Node(id=node,
                              label=node,

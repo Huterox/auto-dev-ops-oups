@@ -14,6 +14,8 @@ def build_query_prompt(st,mode):
         sqlAssistantHelper = SqlAssistantHelper(**sql_assistant_connect_config)
         sqlAssistantHelper.connect()
         st.session_state.sqlAssistantHelper = sqlAssistantHelper
+
+    print(sqlAssistantHelper.host,"-----------")
     if mode == True:
 
         sqlContent = """"""
@@ -42,7 +44,7 @@ def build_query_prompt(st,mode):
         相关联的表入下:
         {sqlContent}
         """
-    sqlAssistantHelper.close_connection()
+    # sqlAssistantHelper.close_connection()
     # print("prompt:",prompt)
     return prompt
 
@@ -90,6 +92,7 @@ def sql_chat_assistant(st,config):
                      "content": build_query_prompt(st, sql_assistant_query_model)},
                     {"role": "user", "content": prompt}
                 ])
+
             msg = response.choices[0].message.content
             st.session_state.sql_chat_assistant_messages.append({"role": "assistant", "content": msg})
         except Exception as e:
@@ -132,6 +135,7 @@ class SqlAssistantHelper:
         """获取当前数据库的所有表名"""
         tables = []
         try:
+            self.connect()
             if self.connection is not None:
                 with self.connection.cursor() as cursor:
                     cursor.execute("SHOW TABLES")
@@ -145,13 +149,14 @@ class SqlAssistantHelper:
         """获取指定表的创建语句"""
         create_statement = None
         try:
+            self.connect()
             if self.connection is not None:
                 with self.connection.cursor() as cursor:
                     cursor.execute(f"SHOW CREATE TABLE {table_name}")
                     result = cursor.fetchone()
                     if result:
                         create_statement = result[1]  # "Create Table" 语句是第二个元素
-        except pymysql.MySQLError as e:
+        except Exception as e:
             print(f"获取创建语句失败: {e}")
         return create_statement
 
@@ -159,6 +164,7 @@ class SqlAssistantHelper:
         """获取指定表的依赖关系（外键）"""
         dependencies = []
         try:
+            self.connect()
             if self.connection is not None:
                 with self.connection.cursor() as cursor:
                     # 获取该表作为外键引用的表
@@ -181,7 +187,7 @@ class SqlAssistantHelper:
                                REFERENCED_TABLE_NAME = '{table_name}';
                        """)
                     dependencies.extend([row[0] for row in cursor.fetchall()])
-        except pymysql.MySQLError as e:
+        except Exception as e:
             print(f"获取依赖关系失败: {e}")
         return dependencies
     def close_connection(self):
@@ -189,17 +195,19 @@ class SqlAssistantHelper:
         if self.connection:
             self.connection.close()
             print("数据库连接已关闭")
-
+    def __str__(self):
+        """返回数据库连接信息，用户，密码，连接数库，连接"""
+        return f"数据库连接信息：\n用户：{self.user}\n密码：{self.password}\n连接数库：{self.database}\n连接：{self.host}"
 
 # 使用示例
 if __name__ == "__main__":
     # 配置数据库连接参数
     db_config = {
-        'host': '127.0.0.1',
+        'url': '192.168.0.27',
         'port':3306,
-        'user': 'conven',
-        'password': '123456789',
-        'database': 'ConvenientMore'
+        'username': 'root',
+        'password': 'jiangniao',
+        'database': 'shichang'
     }
 
     # 创建 SqlHelper 实例
@@ -213,13 +221,13 @@ if __name__ == "__main__":
     print("所有表名:", all_tables)
 
     #获取指定表的创建语句
-    table_name = 'la_system_auth_perm'  # 替换为你想要查看的表名
+    table_name = 'area'  # 替换为你想要查看的表名
     create_statement = sql_helper.get_create_table_statement(table_name)
     if create_statement:
         print("表的创建语句:\n", create_statement)
 
     # 获取当前表的依赖外键
-    table_name = 'la_system_auth_perm'  # 替换为你想要查看的表名
+    table_name = 'company'  # 替换为你想要查看的表名
     dependencies = sql_helper.get_table_dependencies(table_name)
     print(f"表 {table_name} 的依赖关系:", dependencies)
     # 关闭数据库连接

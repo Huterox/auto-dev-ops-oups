@@ -18,6 +18,49 @@ from bot.collection.agents import CollectionExtAgent
 from webui.handler.collationHandler import getCollectionSummary, getCollectionSuggest, get_audio_content
 
 
+def container_bot_write(st,container,key,value):
+    # writen the key with value in session state
+    st.session_state[key] = value
+    # with the container to show the component
+    with container.chat_message("assistant"):
+        placeholder = st.empty()
+        full_response = '👻'
+        for item in value:
+          full_response += item
+          time.sleep(0.001)
+          placeholder.markdown(full_response)
+        placeholder.markdown(full_response)
+
+@st.experimental_dialog('逻辑导图',)
+def logic_graph():
+
+    sac.alert(label='Tips',
+              description='作者在自闭城苦练坤术，N个版本后更新👀',
+              size=15,
+              color='teal',
+              banner=False,
+              icon=True, closable=True)
+    tips_container = st.container(height=370)
+    with tips_container:
+        st.markdown(r"""
+        ```html
+                          |
+                      (| -_- |)     
+                   ____/`---'\____
+                 .'  \\|     |//  `.                 
+                /  \\|||  :  |||//  \
+               /  _||||| -:- |||||-  \
+               |   | \\\  -  /// |   | 
+               | \_|  ''\---/''  |   |
+               \  .-\__  `-`  ___/-. /               
+             ___`. .'  /--.--\  `. . __              
+          ."" '<  `.___\_<|>_/___.'  >'"".           
+         | | :  `- \`.;`\ _ /`;.`/ - ` : | |         
+         \  \ `-.   \_ __\ /__ _/   .-` /  /     
+         ```    
+        """)
+
+
 @st.experimental_dialog('音频解析',)
 def audio_analysis(st,container_show):
     audio_analysis_container = st.container(height=300)
@@ -105,56 +148,44 @@ def collationUI():
                   ,
                   color='success',
                   banner=False,
+                  size=12,
                   icon=True, closable=True)
 
     c0,c1,c2 = st.columns([1,2,1])
     with c0:
         # 这里是两个提示总结框
-        st.session_state["collation_summary_open"]=sac.switch(
+        summary_open = sac.switch(
             label='智能总结', align='center', size='md',
             value=st.session_state.get("collation_summary_open", False),
         )
+        st.session_state["collation_summary_open"] = summary_open
         collation_summary_container = st.container(height=200)
-        st.button("生成逻辑图",type="primary")
+        st.button("生成逻辑图",type="primary",on_click=logic_graph)
 
         # 先清空一下
         collation_summary_container.empty()
         if "collation_main_messages" not in st.session_state or st.session_state.collation_main_messages == []:
-            with collation_summary_container.chat_message("assistant"):
-                msg = "当前您还没有提出需求喔~，请您提出您的需求，我将为您总结需求😄"
-                placeholder = st.empty()
-                full_response = ''
-                for item in msg:
-                    full_response += item
-                    time.sleep(0.005)
-                    placeholder.markdown(full_response)
-                placeholder.markdown(full_response)
+            msg = "当前您还没有提出需求喔~，请您提出您的需求，我将为您总结需求😄"
+            collation_summary_container.chat_message("assistant").write(msg)
         else:
             summary_content = st.session_state.get("collation_summary_content","暂无总结~")
-            collation_summary_container.chat_message("assistant").write(summary_content)
+            collation_summary_container.chat_message("assistant").write("👻"+summary_content)
 
         #######################################################################################
-        st.session_state["collation_suggest_open"] = sac.switch(
+        suggest_open = sac.switch(
             label='智能提示', align='center', size='md',
             value=st.session_state.get("collation_suggest_open", False),
         )
-
+        st.session_state["collation_suggest_open"] = suggest_open
         collation_suggest_container = st.container(height=200)
         # 先清空一下
         collation_suggest_container.empty()
         if "collation_main_messages" not in st.session_state or st.session_state.collation_main_messages == []:
-            with collation_suggest_container.chat_message("assistant"):
-                msg = "当前您还没有提出需求喔~，请您提出您的需求，我将为您提出建议😄"
-                placeholder = st.empty()
-                full_response = ''
-                for item in msg:
-                    full_response += item
-                    time.sleep(0.005)
-                    placeholder.markdown(full_response)
-                placeholder.markdown(full_response)
+            msg = "当前您还没有提出需求喔~，请您提出您的需求，我将为您提出建议😄"
+            collation_suggest_container.chat_message("assistant").write(msg)
         else:
             suggest_content = st.session_state.get("collation_suggest_content","暂无建议👀")
-            collation_suggest_container.chat_message("assistant").write(suggest_content)
+            collation_suggest_container.chat_message("assistant").write("👻"+suggest_content)
 
     with c1:
         # 这个是主对话框
@@ -204,12 +235,19 @@ def collationUI():
 
                     # 提交需求总结任务，用户需求提问建议任务
                     futures = [
-                        executor.submit(getCollectionSummary, st,collation_summary_container,history),
-                        executor.submit(getCollectionSuggest,st,collation_suggest_container,history)
+                        executor.submit(getCollectionSummary, summary_open,collation_summary_container,history),
+                        executor.submit(getCollectionSuggest,suggest_open,collation_suggest_container,history)
                     ]
                     # 等待所有任务完成，等待所有信息展示
+                    res = {}
                     for future in concurrent.futures.as_completed(futures):
-                        info = future.result()
+                        info,info_ty = future.result()
+                        res[info_ty] = info
+
+                    container_bot_write(st, collation_summary_container, "collation_summary_content", res.get("summary"))
+                    container_bot_write(st, collation_suggest_container, "collation_suggest_content", res.get("suggest"))
+
+
             except Exception as e:
                 msg = "抱歉，出现异常，请稍后再试~"
             with collation_main_container.chat_message("assistant"):
@@ -232,15 +270,9 @@ def collationUI():
         collation_audio_container = st.container(height=250)
         if not st.session_state.get("current_audio_content_ext"):
             collation_audio_container.empty()
-            with collation_audio_container.chat_message("assistant"):
-                msg = "请您输入音频文件地址，我将根据音频为您总结用户需求🥴"
-                placeholder = st.empty()
-                full_response = ''
-                for item in msg:
-                    full_response += item
-                    time.sleep(0.01)
-                    placeholder.markdown(full_response)
-                placeholder.markdown(full_response)
+            msg = "请您输入音频文件地址，我将根据音频为您总结用户需求🥴"
+            collation_audio_container.chat_message("assistant") \
+                .write(msg)
         else:
             collation_audio_container.chat_message("assistant")\
                 .write(st.session_state.get("current_audio_content_ext"))
