@@ -14,11 +14,12 @@ import streamlit_antd_components as sac
 from openai import OpenAI
 import concurrent.futures
 from base import current_dir_root
+from bot.collection.agents import CollectionExtAgent
 from webui.handler.collationHandler import getCollectionSummary, getCollectionSuggest, get_audio_content
 
 
 @st.experimental_dialog('音频解析',)
-def audio_analysis():
+def audio_analysis(st,container_show):
     audio_analysis_container = st.container(height=300)
     with audio_analysis_container:
         audio_path = st.session_state.get("collation_audio_input")
@@ -46,7 +47,9 @@ def audio_analysis():
             with audio_res_analysis_container:
                 with st.spinner('正在解析语音...'):
                     with audio_res_analysis_container:
-                        res = get_audio_content(audio_path)
+                        res,flag = get_audio_content(audio_path)
+                        # 将当前提取的对话内容存储起来
+                        st.session_state.current_audio_content = res
                         placeholder = st.empty()
                         full_response = ''
                         for item in res:
@@ -54,6 +57,27 @@ def audio_analysis():
                             time.sleep(0.005)
                             placeholder.markdown(full_response)
                         placeholder.markdown(full_response)
+                    if flag:
+                        with st.spinner("正在整理需求..."):
+                            agent = CollectionExtAgent()
+                            ext = agent.get_ext(res)
+                            # 临时存储ext，并展示
+                            st.session_state["current_audio_content_ext"] = ext
+                            container_show.empty()
+                            with container_show.chat_message("assistant"):
+                                placeholder = st.empty()
+                                full_response = ''
+                                for item in ext:
+                                    full_response += item
+                                    time.sleep(0.005)
+                                    placeholder.markdown(full_response)
+                                placeholder.markdown(full_response)
+                            sac.alert(label='Tips',
+                                      description='需求整理提取完毕',
+                                      size=12,
+                                      color='teal',
+                                      banner=False,
+                                      icon=True, closable=True)
 
 
         else:
@@ -63,10 +87,6 @@ def audio_analysis():
                       color='yellow',
                       banner=False,
                       icon=True, closable=True)
-
-
-
-
 
 
 def collationUI():
@@ -111,15 +131,7 @@ def collationUI():
                 placeholder.markdown(full_response)
         else:
             summary_content = st.session_state.get("collation_summary_content","暂无总结~")
-            if summary_content:
-                with collation_summary_container.chat_message("assistant"):
-                    placeholder = st.empty()
-                    full_response = ''
-                    for item in summary_content:
-                        full_response += item
-                        time.sleep(0.005)
-                        placeholder.markdown(full_response)
-                    placeholder.markdown(full_response)
+            collation_summary_container.chat_message("assistant").write(summary_content)
 
         #######################################################################################
         st.session_state["collation_suggest_open"] = sac.switch(
@@ -142,15 +154,7 @@ def collationUI():
                 placeholder.markdown(full_response)
         else:
             suggest_content = st.session_state.get("collation_suggest_content","暂无建议👀")
-            if suggest_content:
-                with collation_suggest_container.chat_message("assistant"):
-                    placeholder = st.empty()
-                    full_response = ''
-                    for item in suggest_content:
-                        full_response += item
-                        time.sleep(0.005)
-                        placeholder.markdown(full_response)
-                    placeholder.markdown(full_response)
+            collation_suggest_container.chat_message("assistant").write(suggest_content)
 
     with c1:
         # 这个是主对话框
@@ -226,15 +230,20 @@ def collationUI():
                   banner=False,
                   icon=True, closable=True)
         collation_audio_container = st.container(height=250)
-        with collation_audio_container.chat_message("assistant"):
-            msg = "请您输入音频文件地址，我将根据音频为您总结用户需求🥴"
-            placeholder = st.empty()
-            full_response = ''
-            for item in msg:
-                full_response += item
-                time.sleep(0.01)
+        if not st.session_state.get("current_audio_content_ext"):
+            collation_audio_container.empty()
+            with collation_audio_container.chat_message("assistant"):
+                msg = "请您输入音频文件地址，我将根据音频为您总结用户需求🥴"
+                placeholder = st.empty()
+                full_response = ''
+                for item in msg:
+                    full_response += item
+                    time.sleep(0.01)
+                    placeholder.markdown(full_response)
                 placeholder.markdown(full_response)
-            placeholder.markdown(full_response)
+        else:
+            collation_audio_container.chat_message("assistant")\
+                .write(st.session_state.get("current_audio_content_ext"))
         audio_path = st.session_state.get("collation_audio_input")
         if audio_path:
             if os.path.exists(audio_path):
@@ -243,7 +252,8 @@ def collationUI():
                 st.markdown("`音频地址错误`")
         else:
             st.markdown("`暂未填写音频文件地址`")
-        audio_input_path = st.text_input("请输入音频文件地址", key="collation_audio_input")
+        audio_input_path = st.text_input("请输入音频文件地址")
+        st.session_state["collation_audio_input"] = audio_input_path
         if st.button("开始提取音频内容",type="primary"):
-            audio_analysis()
+            audio_analysis(st,collation_audio_container)
 

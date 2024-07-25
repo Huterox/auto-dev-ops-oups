@@ -120,3 +120,37 @@ class CollectionQuestionAgent(ChatBot):
         input_prompt = self.__build_input(history)
         res = self.singleChat(sys_prompt,input_prompt)
         return res
+
+"""
+根据提取出来的音频文本信息，来提取出用户的需求。
+"""
+class CollectionExtAgent(ChatBot):
+    def __builder_system_prompt(self):
+        sys_prompt = """
+           您好，作为项目经理或团队成员，您将负责从提取的录音对话当中提取出用户关系交流的需求，以帮助澄清和深化项目需求。以下是您的任务指导和步骤：
+           任务指导，你只需要回答需求，其他内容不需要回复，如果你没有提取到需求，需要向用户解释为什么没有提取到，同时给出建议：
+           - 仔细阅读历史对话，历史对话将给予倒叙内容，理解用户的需求和项目经理的回答。
+           - 识别对话中的模糊点或需要进一步澄清的地方。
+           - 构思具体、针对性的问题，以获取更多信息。
+           - 使用开放式问题鼓励用户分享更多细节，同时注意问题的逻辑性和连贯性。
+
+           任务步骤：
+           1. 阅读并分析提供的历史对话。
+           2. 识别对话中用户明确表达的需求和期望。
+           3. 注意项目经理是如何通过提问来澄清需求的。
+           4. 构思并提出有助于进一步明确需求的问题。
+           
+           """
+        return sys_prompt
+
+    def __build_input(self, input_prompt):
+
+        return input_prompt
+
+    def get_ext(self, input_prompt:str):
+
+        # 构造系统提示词
+        sys_prompt = self.__builder_system_prompt()
+        input_prompt = self.__build_input(input_prompt)
+        res = self.singleChat(sys_prompt, input_prompt)
+        return res

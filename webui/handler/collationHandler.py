@@ -58,14 +58,16 @@ def get_audio_content(audio_file):
         ]
     }
     """
+    flag = False
     try:
         result = faster_whisper_result(audio_file, device, model, whisper_prompt_setting, temperature_setting,
                                        vad_setting, lang_setting, beam_size_setting, min_vad_setting)
 
-        return result["text"]
+        flag = True
+        return result["text"],flag
     except Exception as e:
         print(e)
-        return "抱歉当前语音识别失败😣"
+        return "抱歉当前语音识别失败😣",flag
 
 """
 Get the summary of requirements by use the agent of CollectionSummaryAgent
@@ -75,14 +77,14 @@ def container_bot_write(st,container,key,value):
     # writen the key with value in session state
     st.session_state[key] = value
     # with the container to show the component
-    # with container.chat_message("assistant"):
-    #     placeholder = st.empty()
-    #     full_response = ''
-    #     for item in value:
-    #       full_response += item
-    #       time.sleep(0.005)
-    #       placeholder.markdown(full_response)
-    #     placeholder.markdown(full_response)
+    with container.chat_message("assistant"):
+        placeholder = st.empty()
+        full_response = ''
+        for item in value:
+          full_response += item
+          time.sleep(0.005)
+          placeholder.markdown(full_response)
+        placeholder.markdown(full_response)
 
 def getCollectionSummary(st,collation_summary_container,history):
     # check the switch is open
