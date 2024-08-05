@@ -11,7 +11,7 @@ import streamlit_antd_components as sac
 import toml
 from base import current_dir_root
 
-from workflow.build_system.agents.flows import FlowNodeManger
+from workflow.build_system.flows import FlowNodeManger
 
 
 

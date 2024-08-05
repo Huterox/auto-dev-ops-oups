@@ -1,38 +1,17 @@
 """
-@FileName：agents.py
+@FileName：step01.py
 @Author：Huterox
 @Description：Go For It
-@Time：2024/8/4 14:14
+@Time：2024/8/5 21:29
 @Copyright：©2018-2024 awesome!
-
-Agents主要为实现整个逻辑推理的智能体，负责实现工作流程设定的复杂实现
 """
-from bot.Bot import ChatBot
+from workflow.build_system.agents.agent import FlowAgent
 
 
-class FlowAgent(ChatBot):
-
-    def __builder_system_prompt(self,history,input_prompt):
-        pass
-
-    def __build_input(self, history,input_prompt):
-        pass
-
-    def get_res(self, history: list,input_prompt:str):
-        """
-        :param history: [
-            {"role": "assistant", "content": msg},
-            {"role": "user", "content": msg}
-        ]
-        :param input: msg
-        :return:
-        """
-        pass
-
-class AgentStep1(FlowAgent):
+class AgentStep2(FlowAgent):
 
     def __builder_system_prompt(self,history,input_prompt):
-        return """你是一个基于下面内容的AI小助手，你的名字叫做小A"""
+        return """你是一个数据库设计师小B，你负责根据用户提供的需求和软件项目经理明确的需求来设计数据库"""
 
     def __build_input(self, history,input_prompt)->list:
         history.append({"role": "user","content":input_prompt})
