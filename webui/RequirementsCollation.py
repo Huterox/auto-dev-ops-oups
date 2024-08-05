@@ -163,7 +163,6 @@ def collationUI():
         st.button("生成逻辑图",type="primary",on_click=logic_graph)
 
         # 先清空一下
-        collation_summary_container.empty()
         if "collation_main_messages" not in st.session_state or st.session_state.collation_main_messages == []:
             msg = "当前您还没有提出需求喔~，请您提出您的需求，我将为您总结需求😄"
             collation_summary_container.chat_message("assistant").write(msg)

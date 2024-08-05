@@ -1,6 +1,8 @@
 
 import streamlit as st
 import streamlit_antd_components as sac
+
+from webui.ChatFlow import chatFlowUI
 from webui.Home import homeUI
 from webui.RequirementsCollation import collationUI
 from webui.CodingAssistant import assistantUI
@@ -21,13 +23,13 @@ with st.sidebar.container():
         items=[
             sac.MenuItem('首页', icon='house-fill'),
             sac.MenuItem('编码助手', icon='robot',children=[
-                sac.MenuItem('编码问答', icon='chat-left-text'),
+                sac.MenuItem('项目分析', icon='chat-left-text'),
                 sac.MenuItem('SQL助手', icon='filetype-sql'),
                 sac.MenuItem('需求分析', icon='file-earmark-break'),
             ]),
             sac.MenuItem('系统生成', icon='alt',children=[
                 sac.MenuItem('Auto流程', icon='fan'),
-                sac.MenuItem('自动生成', icon='hourglass'),
+                sac.MenuItem('ChatFlow', icon='hourglass'),
             ]),
         ],
         key='menu',
@@ -40,10 +42,11 @@ if __name__ == '__main__':
 
     menus_page = {
         "首页": homeUI,
-        "编码问答": assistantUI,
+        "项目分析": assistantUI,
         "SQL助手": sqlAssistantUI,
         "需求分析": collationUI,
-        "系统生成": autoUI,
+        "Auto流程": autoUI,
+        "ChatFlow": chatFlowUI
     }
 
     with st.sidebar:

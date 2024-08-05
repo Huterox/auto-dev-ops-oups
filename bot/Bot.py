@@ -30,7 +30,7 @@ class ChatBot(object):
     """
     进行单次对话，只进行一轮对话，没有上下文信息
     """
-    def singleChat(self,system_prompt,question,temperature=default_temperature):
+    def singleChat(self,system_prompt,question,temperature=default_temperature)->str:
 
             history_openai_format = []
             # 先加入系统信息
@@ -59,13 +59,15 @@ class ChatBot(object):
     """
     多轮对话（保留历史信息）
     """
-    def muiltChat(self,history:list[dict],message:str,temperature:float=default_temperature)->tuple[str,list[dict]]:
+    def muiltChat(self,history:list[dict],system_prompt:str,temperature:float=default_temperature)->str:
         if(history==None):
             history = []
-        history.append({"role": "user","content":message})
+        history_format = history[:]
+        # 在原来的记录的基础上，增加系统的提示词
+        history_format.append({"role": "system", "content": system_prompt})
         completion = client.chat.completions.create(
                 model=default_model,
-                messages=history,
+                messages=history_format,
                 temperature=temperature,
             )
         try:
@@ -78,5 +80,5 @@ class ChatBot(object):
             "role": "user",
             "content": result
         })
-        return result,history
+        return result
 
