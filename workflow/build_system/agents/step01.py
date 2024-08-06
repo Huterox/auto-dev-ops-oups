@@ -11,7 +11,7 @@ from workflow.build_system.agents.agent import FlowAgent
 class AgentStep1(FlowAgent):
 
     def __builder_system_prompt(self,history,input_prompt):
-        return """你是一个软件项目经理小A，你负责根据用户的需求，来设计软件的功能，功能描述要求详细，用中文回答markdown格式回答"""
+        return """你是一个软件项目经理小A，你负责根据用户的需求，来设计软件的功能，功能描述要求详细，使用中文来回答问题"""
 
     def __build_input(self, history,input_prompt)->list:
         history.append({"role": "user","content":input_prompt})

@@ -81,18 +81,22 @@ def sql_chat_assistant(st,config):
         client = OpenAI(api_key=default_key,
                         base_url=default_base,
                         )
+        # add the user chat
         st.session_state.sql_chat_assistant_messages.append({"role": "user", "content": prompt})
         sql_chat_assistant_messages.chat_message("user").write(prompt)
         try:
+            # build the system prompt in history variable(the type of history is list)
+            history = st.session_state.sql_chat_assistant_messages[:]
+            history.append(
+                {"role": "system",
+                 "content": build_query_prompt(st, sql_assistant_query_model)
+                 }
+            )
             response = client.chat.completions.create(
                 model=default_model,
                 temperature=default_temperature,
-                messages=[
-                    {"role": "system",
-                     "content": build_query_prompt(st, sql_assistant_query_model)},
-                    {"role": "user", "content": prompt}
-                ])
-
+                messages=history
+            )
             msg = response.choices[0].message.content
             st.session_state.sql_chat_assistant_messages.append({"role": "assistant", "content": msg})
         except Exception as e:
