@@ -7,7 +7,7 @@
 """
 from workflow.build_system.agents.step03 import AgentStep3
 from workflow.build_system.nodes.node import FlowNode
-from workflow.build_system.nodes.variables import FlowVariables
+from workflow.build_system.variables import FlowVariables
 from workflow.build_system.system_state import CHAT_FLOW_STATE
 import streamlit_antd_components as sac
 import streamlit as st

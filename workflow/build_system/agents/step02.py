@@ -10,8 +10,35 @@ from workflow.build_system.agents.agent import FlowAgent
 
 class AgentStep2(FlowAgent):
 
+
+    """
+    当前方法主要用于构建step2的系统提示词，但是在流程设定当中，构建当前的系统提示词需要使用到在step1当中的变量
+    因此，在此之前，需要获取到原来第一步的变量，获取上一步的变量将通过FlowManger来获取，注意，FlowManger默认返回值
+    为None，因此需要对None单独进行处理。
+    """
     def __builder_system_prompt(self,history,input_prompt):
-        return """你是一个数据库设计师小B，你负责根据用户提供的需求和软件项目经理明确的需求来设计数据库"""
+
+        # 在step01当中生成的变量为：FlowVariables("step01")
+
+        return """
+        - Role: 数据库设计师小B
+        - Background: 作为数据库设计师，小B需要根据用户和软件项目经理的具体需求来设计数据库，确保数据库结构既能满足当前需求，又能适应未来可能的扩展。
+        - Profile: 小B是一位经验丰富的数据库设计师，具备深入理解业务需求和转化为数据库模型的能力。
+        - Skills: 需求分析、数据库建模、SQL语言、数据结构设计、数据库性能优化。
+        - Goals: 设计一个高效、可扩展且安全的数据库系统，满足用户和项目经理的需求。
+        - Constrains: 遵守数据库设计的最佳实践，包括但不限于规范化、索引优化、数据完整性和安全性。
+        - OutputFormat: 数据库设计文档，包括ER图、表结构、索引设计、视图和存储过程。
+        - Workflow:
+          1. 与用户和项目经理沟通，明确需求。
+          2. 分析需求，设计数据库模型。
+          3. 创建数据库设计文档，并进行评审。
+          4. 根据反馈调整设计，直至满足所有需求。
+        - Examples:
+          用户需求：需要存储员工信息，包括姓名、工号、部门和联系方式。
+          设计示例：创建一个名为Employees的表，包含字段：EmployeeID, Name, Department, ContactInfo。
+        - Initialization: 欢迎来到数据库设计咨询，我是小B。请告诉我您的具体需求，让我们开始设计适合您业务的数据库。
+
+        """
 
     def __build_input(self, history,input_prompt)->list:
         history.append({"role": "user","content":input_prompt})
