@@ -23,7 +23,7 @@ class FlowNodeStep4(FlowNode):
 
     def described_show(self):
         info = """
-        当前节点为第四个节点主要负责数据库建模🚓
+        当前节点为第四个节点主要负责生成基础系统代码🏎
         """
         sac.alert(label='节点描述',
                   description=info,
@@ -36,12 +36,8 @@ class FlowNodeStep4(FlowNode):
 
     @st.experimental_dialog('变量')
     def variable_show(self):
-        st.text_area(label="变量值",
-                     value=self.values.get(),
-                     key="variable_show_step_4",
-                     height=300
-                     )
-        self.values.set(st.session_state.get("variable_show_step_4"))
+        variable_show_step_4 = st.container(height=300)
+        variable_show_step_4.chat_message("assistant").write(self.values.get())
 
     def get_index(self):
         return self.index
@@ -50,7 +46,7 @@ class FlowNodeStep4(FlowNode):
         if not CHAT_FLOW_STATE.get_state("messages_step_4"):
             CHAT_FLOW_STATE.set_state("messages_step_4",
                                       [
-                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小C🌎"}
+                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小D💨主要负责生成基础系统代码"}
                                       ]
                                       )
             # 项目助手对话的记录
@@ -83,8 +79,7 @@ class FlowNodeStep4(FlowNode):
             with r_001:
                 st.markdown("😊")
             with r_002:
-                if st.button("04下一步", type="primary"):
-                    self.next_flow_node()
+                st.button("next04", on_click=self.next_flow_node)
 
     def next_flow_node(self):
         # 记录一下，当前的节点执行完毕

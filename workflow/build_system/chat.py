@@ -19,7 +19,9 @@ def chat_flow():
 
     config = toml.load(os.path.join(current_dir_root, "api.toml"))
     sac.alert(label='Tips',
-              description=f'欢迎来到系统生成页面，当前流程：PYTHON WEB SYSTEM GENERATED🥴',
+              description=f'欢迎来到系统生成页面，当前流程：PYTHON WEB SYSTEM GENERATED🥴'
+                          f'`\n注意页面刷新后进入新系统创建，当前暂不支持直接构建系统文件，'
+                          f'请您根据生成结果提示将系统代码放置在合适项目中。` 折叠菜单栏可获得更好的页面体验👀',
               size=12,
               color='success',
               banner=False,
@@ -50,11 +52,11 @@ def chat_flow():
         st.write("")
         flow_state_res = st.container(height=470)
         map_step = {
-            "0":sac.StepsItem(title='step 1'),
-            "1":sac.StepsItem(title='step 2'),
-            "2":sac.StepsItem(title='step 3'),
-            "3":sac.StepsItem(title='step 4'),
-            "4":sac.StepsItem(title='step 5'),
+            "0":sac.StepsItem(title='需求文档生成'),
+            "1":sac.StepsItem(title='数据建模分析'),
+            "2":sac.StepsItem(title='SQL构建生成'),
+            "3":sac.StepsItem(title='基础系统生成'),
+            "4":sac.StepsItem(title='系统功能微调'),
         }
         with flow_state_res:
             bt = sac.buttons([

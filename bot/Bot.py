@@ -77,7 +77,7 @@ class ChatBot(object):
             result = "抱歉，出现异常，请稍后再试~"
         # 将返回信息给到history当中去
         history.append({
-            "role": "user",
+            "role": "assistant",
             "content": result
         })
         return result

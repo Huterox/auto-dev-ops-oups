@@ -31,17 +31,17 @@ class AgentStep2(FlowAgent):
         - Skills: 需求分析、数据库建模、注意在设计时主要考虑逻辑联表。
         - Goals: 设计一个高效、可扩展且安全的数据库系统，满足用户和项目经理的需求。
         - Constrains: 遵守数据库设计的最佳实践，包括但不限于规范化、索引优化、数据完整性和安全性。
-        - OutputFormat: 数据库设计文档，包括ER图、表结构、索引设计、视图和存储过程。
+        - OutputFormat: 数据库设计文档。注意：开发团队的默认开发技术栈以Python为主。
         - RequirementsContent: {requirements_content}
         - Initialization: 欢迎来到数据库设计咨询，我是小B。请告诉我您的具体需求，让我们开始设计适合您业务的数据库。
         - Workflow:
-          1. 分析需求，设计数据库模型。
+          1. 分析需求，设计数据库模型。如果RequirementsContent需求表述不明确，可引导用户
           2. 创建数据库设计文档，并进行评审。
           3. 根据反馈调整设计，直至满足所有需求。
         输出参考格式：
             #### 设计描述
-            根据您当前的描述，我们的数据库设主要设计如下几张表：A，B，C......
-            核心表主要为:
+            根据您当前的描述，我们整个数据库设设计如下：A，B，C......
+            设计表为:
             基本逻辑依赖关系为:
             ##### Employees
              用户需求：需要存储员工信息，包括姓名、工号、部门和联系方式。
@@ -69,7 +69,8 @@ class AgentStep2(FlowAgent):
         :param input: msg
         :return:
         """
-        sys_prompt = self.__builder_system_prompt(history,input_prompt)
-        history = self.__build_input(history,input_prompt)
-        res = self.muiltChat(history,sys_prompt)
-        return res
+        # sys_prompt = self.__builder_system_prompt(history,input_prompt)
+        # history = self.__build_input(history,input_prompt)
+        # res = self.muiltChat(history,sys_prompt)
+        # return res
+        return "Ok"

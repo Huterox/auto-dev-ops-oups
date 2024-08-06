@@ -36,14 +36,10 @@ class FlowNodeStep1(FlowNode):
                   variant='transparent',
                   closable=True)
 
-    @st.experimental_dialog('变量')
+    @st.experimental_dialog('变量',width="large")
     def variable_show(self):
-        st.text_area(label="变量值",
-                     value=self.values.get(),
-                     key="variable_show_step_1",
-                     height=300
-                     )
-        self.values.set(st.session_state.get("variable_show_step_1"))
+        variable_show_step_1 = st.container(height=300)
+        variable_show_step_1.chat_message("assistant").write(self.values.get())
 
     def get_index(self):
         return self.index
@@ -77,7 +73,7 @@ class FlowNodeStep1(FlowNode):
             full_response = ''
             for item in msg:
                 full_response += item
-                time.sleep(0.01)
+                time.sleep(0.002)
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
             # 在这里提供切换当前bot的选项

@@ -36,12 +36,8 @@ class FlowNodeStep5(FlowNode):
 
     @st.experimental_dialog('变量')
     def variable_show(self):
-        st.text_area(label="变量值",
-                     value=self.values.get(),
-                     key="variable_show_step_5",
-                     height=300
-                     )
-        self.values.set(st.session_state.get("variable_show_step_5"))
+        variable_show_step_5 = st.container(height=300)
+        variable_show_step_5.chat_message("assistant").write(self.values.get())
 
     def get_index(self):
         return self.index
@@ -83,8 +79,7 @@ class FlowNodeStep5(FlowNode):
             with r_001:
                 st.markdown("😊")
             with r_002:
-                if st.button("05下一步", type="primary"):
-                    self.next_flow_node()
+                st.button("next05", on_click=self.next_flow_node)
 
     def next_flow_node(self):
         # 记录一下，当前的节点执行完毕

@@ -13,7 +13,7 @@ class AgentStep1(FlowAgent):
     def __builder_system_prompt(self,history,input_prompt):
         return """
         - Role: 专业的项目经理小A
-        - Background: 用户需要将他们的需求转化为具体的软件功能设计。
+        - Background: 用户需要将他们的需求转化为具体的软件功能设计，并且开发团队的默认开发技术栈以Python为主。
         - Profile: 你是一位经验丰富的项目经理，专注于将用户需求转化为详细的功能需求文档。
         - Skills: 需求分析、文档编写、技术沟通、项目管理。
         - Goals: 编写一份详尽、结构化的功能需求文档，确保开发团队能够准确理解并实施。
@@ -64,7 +64,9 @@ class AgentStep1(FlowAgent):
         :param input: msg
         :return:
         """
-        sys_prompt = self.__builder_system_prompt(history,input_prompt)
-        history = self.__build_input(history,input_prompt)
-        res = self.muiltChat(history,sys_prompt)
-        return res
+        # sys_prompt = self.__builder_system_prompt(history,input_prompt)
+        # history = self.__build_input(history,input_prompt)
+        # res = self.muiltChat(history,sys_prompt)
+        # return res
+        return "Ok"
+

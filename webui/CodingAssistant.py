@@ -13,6 +13,7 @@ from streamlit_agraph import agraph, Node, Edge, Config
 from webui.handler.assistantHandler import *
 from webui.handler.assistantHandler import exclude_file_name,exclude_directories
 
+
 def del_link_file_item(linked_node,current_select_fileItem,show_code_linked_item_tips_container):
     st.session_state.current_link_file_item.remove(linked_node)
     with show_code_linked_item_tips_container:
@@ -147,6 +148,10 @@ def analysis_project(project_path):
                       icon=True, closable=True)
 
 def assistantUI():
+
+    global exclude_directories
+    global exclude_file_name
+
     st.subheader("MathAI V0.1")
     st.caption("POWERED BY @Huterox")
     config = toml.load(os.path.join(current_dir_root, "api.toml"))

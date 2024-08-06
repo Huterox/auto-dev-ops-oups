@@ -8,6 +8,9 @@
 from workflow.build_system.nodes.node import FlowNode
 from workflow.build_system.nodes.step01 import FlowNodeStep1
 from workflow.build_system.nodes.step02 import FlowNodeStep2
+from workflow.build_system.nodes.step03 import FlowNodeStep3
+from workflow.build_system.nodes.step04 import FlowNodeStep4
+from workflow.build_system.nodes.step05 import FlowNodeStep5
 from workflow.build_system.system_state import CHAT_FLOW_STATE
 
 """
@@ -31,9 +34,9 @@ TODO: 现在暂时没有可视化创作界面，因此没有办法通过JSON模�
 
 flow_step01 = FlowNodeStep1("step01")
 flow_step02 = FlowNodeStep2("step02")
-flow_step03 = FlowNodeStep2("step03")
-flow_step04 = FlowNodeStep2("step04")
-flow_step05 = FlowNodeStep2("step05")
+flow_step03 = FlowNodeStep3("step03")
+flow_step04 = FlowNodeStep4("step04")
+flow_step05 = FlowNodeStep5("step05")
 
 flow_map = {
     "0":{

@@ -34,28 +34,60 @@ class FlowNodeStep2(FlowNode):
                   variant='transparent',
                   closable=True)
 
-    @st.experimental_dialog('变量')
+    @st.experimental_dialog('变量',width="large")
     def variable_show(self):
-        st.text_area(label="变量值",
-                     value=self.values.get(),
-                     key="variable_show_step_2",
-                     height=300
-                     )
-        self.values.set(st.session_state.get("variable_show_step_2"))
+        variable_show_step_2 = st.container(height=400)
+        variable_show_step_2.chat_message("assistant").write(self.values.get())
 
     def get_index(self):
         return self.index
+
+
+    def init_auto_func(self,flow_chat_messages):
+
+        # 如果说当前没有设置的变量，那么就说明我们当前这个执行节点还是处于初始化的状态
+        v = self.values.get()
+        time.sleep(1)
+        if not v:
+            input_prompt = "根据你已知的：RequirementsContent 开始数据库建模"
+            with flow_chat_messages.chat_message("assistant"):
+                self.printer_show("正在分析您的需求... 接下来要开始发力了!!✨💦")
+
+            with flow_chat_messages.chat_message("assistant"):
+                with st.spinner("正在初始化数据库建模......"):
+                    histroy = CHAT_FLOW_STATE.get_state("messages_step_2")
+                    msg = self.agent.get_res(histroy, input_prompt)
+                    # 这里需要将变量写进去  （当前只是确定需求，还可以这样处理没有问题）
+                    self.values.set(msg)
+                    # 将记录写进去(是的，这里也是需要将变量写进去的，不然下次就会继续触发这个玩意)
+                    # 当前的这个用户输出还是要去掉的
+                    CHAT_FLOW_STATE.set_state("messages_step_2", histroy)
+                    placeholder = st.empty()
+                    full_response = ''
+                    for item in msg:
+                        full_response += item
+                        time.sleep(0.002)
+                        placeholder.markdown(full_response)
+                    placeholder.markdown(full_response)
+                    # 在这里提供切换当前bot的选项
+                    r_001, r_002 = st.columns([0.6, 0.4])
+                    with r_001:
+                        st.markdown("🤗")
+                    with r_002:
+                        st.button("next02", on_click=self.next_flow_node)
 
     def message_show(self, flow_chat_messages):
         if not CHAT_FLOW_STATE.get_state("messages_step_2"):
             CHAT_FLOW_STATE.set_state("messages_step_2",
                                       [
-                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小B🌎"}
+                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小B🔅负责数据库建模"}
                                       ]
                                       )
-            # 项目助手对话的记录
         for msg in CHAT_FLOW_STATE.get_state("messages_step_2"):
             flow_chat_messages.chat_message(msg["role"]).write(msg["content"])
+
+        # 如果触发状态为这个，那么说明当前首次进入当前的节点，按照我们对流程的设计，在这里我们需要先进行初始化处理
+        self.init_auto_func(flow_chat_messages)
 
     def get_res(self, input_prompt: str, st, flow_chat_messages):
 
@@ -75,16 +107,15 @@ class FlowNodeStep2(FlowNode):
             full_response = ''
             for item in msg:
                 full_response += item
-                time.sleep(0.01)
+                time.sleep(0.002)
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
             # 在这里提供切换当前bot的选项
             r_001, r_002 = st.columns([0.6, 0.4])
             with r_001:
-                st.markdown("😊")
+                st.markdown("🤗")
             with r_002:
-                if st.button("02下一步", type="primary"):
-                    self.next_flow_node()
+                st.button("next02", on_click=self.next_flow_node)
 
     def next_flow_node(self):
         # 记录一下，当前的节点执行完毕
