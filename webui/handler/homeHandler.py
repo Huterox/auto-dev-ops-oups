@@ -35,17 +35,21 @@ def home_assistant(st,doc,config):
         client = OpenAI(api_key=default_key,
                         base_url=default_base,
                         )
+
         st.session_state.messages.append({"role": "user", "content": prompt})
         messages.chat_message("user").write(prompt)
         try:
+            history = st.session_state.messages[:]
+            history.append(
+                {"role": "system",
+                 "content": "你是一个基于下面内容的AI小助手，请基于下面的内容和自己的知识回答用户问题。\n" + doc
+                 }
+            )
             response = client.chat.completions.create(
                 model=default_model,
                 temperature=default_temperature,
-                messages=[
-                    {"role": "system",
-                     "content": "你是一个基于下面内容的AI小助手，请基于下面的内容和自己的知识回答用户问题。\n" + doc},
-                    {"role": "user", "content": prompt}
-                ])
+                messages=history
+            )
             msg = response.choices[0].message.content
             st.session_state.messages.append({"role": "assistant", "content": msg})
         except Exception as e:
