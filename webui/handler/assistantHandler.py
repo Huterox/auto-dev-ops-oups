@@ -68,14 +68,17 @@ def code_assistant(st,config):
         st.session_state.messages_code_assistant.append({"role": "user", "content": prompt})
         messages_code_assistant.chat_message("user").write(prompt)
         try:
+            history = st.session_state.messages_code_assistant[:]
+            history.append(
+                {"role": "system",
+                 "content": "你是一个专业的代码专家，你叫Match，精通任何代码，请你帮助用户回答和代码相关的问题。\n"
+                }
+            )
             response = client.chat.completions.create(
                 model=default_model,
                 temperature=default_temperature,
-                messages=[
-                    {"role": "system",
-                     "content": "你是一个专业的代码专家，你叫Match，精通任何代码，请你帮助用户回答和代码相关的问题。\n"},
-                    {"role": "user", "content": prompt}
-                ])
+                messages=history
+            )
             msg = response.choices[0].message.content
             st.session_state.messages_code_assistant.append({"role": "assistant", "content": msg})
         except Exception as e:

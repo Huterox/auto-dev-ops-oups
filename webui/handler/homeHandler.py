@@ -43,7 +43,7 @@ def home_assistant(st,doc,config):
             history.append(
                 {"role": "system",
                  "content": "你是一个基于下面内容的AI小助手，请基于下面的内容和自己的知识回答用户问题。\n" + doc
-                 }
+                }
             )
             response = client.chat.completions.create(
                 model=default_model,
