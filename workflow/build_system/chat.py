@@ -37,7 +37,7 @@ def chat_flow():
         # 这里展示当前工作流节点的消息
         flowNode.message_show(flow_chat_messages)
         if (default_base != None and default_model != ""):
-            placeholder = "有什么我可以帮你的么？😀"
+            placeholder = "点击Enter开启🐟？😀"
         else:
             placeholder = "有什么我可以帮你的么？😀(请先设置默认大模型KEY)"
 
