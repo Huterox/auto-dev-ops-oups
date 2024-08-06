@@ -52,7 +52,7 @@ class FlowNodeStep1(FlowNode):
         if not CHAT_FLOW_STATE.get_state("messages_step_1"):
             CHAT_FLOW_STATE.set_state("messages_step_1",
                                       [
-                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小A🌎"}
+                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小A，负责与您确定系统需求🌎"}
                                       ]
                                       )
             # 项目助手对话的记录

@@ -18,7 +18,14 @@ class FlowNode(object):
     def get_res(self, input_prompt: str, st, flow_chat_messages):
         pass
 
+    # not all the flow node need have this function
+    # if current node is the first node, it will have the previous node
+    # else if current node is the last node, it will not have the previous node
     def next_flow_node(self):
+        pass
+
+    # not all the flow node need to have this function
+    def last_flow_node(self):
         pass
 
     def variable_show(self):
