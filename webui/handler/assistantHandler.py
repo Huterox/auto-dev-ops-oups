@@ -159,6 +159,12 @@ def project_assistant(st,config):
             # 在容器当中展示用户的对话
             project_assistant_messages.chat_message("user").write(prompt)
             try:
+                history = st.session_state.project_assistant_messages[:]
+                history.append(
+                    {"role": "system",
+                     "content": build_assistant_prompt()
+                     }
+                )
                 response = client.chat.completions.create(
                     model=default_model,
                     temperature=default_temperature,

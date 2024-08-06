@@ -54,6 +54,7 @@ def chat_flow():
             "1":sac.StepsItem(title='step 2'),
             "2":sac.StepsItem(title='step 3'),
             "3":sac.StepsItem(title='step 4'),
+            "4":sac.StepsItem(title='step 5'),
         }
         with flow_state_res:
             bt = sac.buttons([
