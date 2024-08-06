@@ -12,13 +12,23 @@ from bot.Bot import ChatBot
 
 class FlowAgent(ChatBot):
 
-    def __builder_system_prompt(self,history,input_prompt):
+    def __builder_system_prompt(self,*args):
         pass
 
     def __build_input(self, history,input_prompt):
         pass
 
-    def get_res(self, history: list,input_prompt:str):
+    # def get_res(self, history: list,input_prompt:str):
+    #     """
+    #     :param history: [
+    #         {"role": "assistant", "content": msg},
+    #         {"role": "user", "content": msg}
+    #     ]
+    #     :param input: msg
+    #     :return:
+    #     """
+    #     pass
+    def get_res(self, *args):
         """
         :param history: [
             {"role": "assistant", "content": msg},

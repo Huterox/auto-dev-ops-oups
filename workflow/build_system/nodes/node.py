@@ -20,19 +20,29 @@ class FlowNode(object):
         pass
 
 
-    def printer_show(self,msg):
-        placeholder = st.empty()
-        full_response = ''
-        for item in msg:
-            full_response += item
-            time.sleep(0.02)
+    def printer_show(self,msg,flow_chat_messages=None):
+        if not flow_chat_messages:
+            placeholder = st.empty()
+            full_response = ''
+            for item in msg:
+                full_response += item
+                time.sleep(0.02)
+                placeholder.markdown(full_response)
             placeholder.markdown(full_response)
-        placeholder.markdown(full_response)
+        else:
+            with flow_chat_messages.chat_message("assistant"):
+                placeholder = st.empty()
+                full_response = ''
+                for item in msg:
+                    full_response += item
+                    time.sleep(0.02)
+                    placeholder.markdown(full_response)
+                placeholder.markdown(full_response)
 
     # not all the flow node need have this function
     # if current node is the first node, it will have the previous node
     # else if current node is the last node, it will not have the previous node
-    def next_flow_node(self,):
+    def next_flow_node(self,*args):
         pass
 
     # not all the flow node need to have this function

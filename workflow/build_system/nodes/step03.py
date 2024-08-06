@@ -77,12 +77,6 @@ class FlowNodeStep3(FlowNode):
                         placeholder.markdown(full_response)
                     placeholder.markdown(full_response)
 
-                    r_001, r_002 = st.columns([0.6, 0.4])
-                    with r_001:
-                        st.markdown("⚓")
-                    with r_002:
-                        st.button("next03", on_click=self.next_flow_node)
-
 
     def message_show(self, flow_chat_messages):
         if not CHAT_FLOW_STATE.get_state("messages_step_3"):
@@ -97,6 +91,13 @@ class FlowNodeStep3(FlowNode):
 
         # 如果触发状态为这个，那么说明当前首次进入当前的节点，按照我们对流程的设计，在这里我们需要先进行初始化处理
         self.init_auto_func(flow_chat_messages)
+
+        with flow_chat_messages:
+            r_001, r_002 = st.columns([0.6, 0.4])
+            with r_001:
+                st.markdown("🛹")
+            with r_002:
+                st.button("next03", on_click=self.next_flow_node, args=(flow_chat_messages,))
 
     def get_res(self, input_prompt: str, st, flow_chat_messages):
         # 显示用户的输入
@@ -118,18 +119,14 @@ class FlowNodeStep3(FlowNode):
                 time.sleep(0.01)
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
-            # 在这里提供切换当前bot的选项
-            r_001, r_002 = st.columns([0.6, 0.4])
-            with r_001:
-                st.markdown("⚓")
-            with r_002:
-                st.button("next03", on_click=self.next_flow_node)
 
-    def next_flow_node(self):
+    def next_flow_node(self,flow_chat_messages):
         # 记录一下，当前的节点执行完毕
         # 如果需要切换上一个节点，那么你要找到上一个节点的上一个节点才能完成切换
         # 如果切换当前节点，则需要上一个节点
         # 如果切换下一个节点，这设置当前节点 对于 current_flow_node_done 的值
         # 当前批次的工作流，还没有涉及到节点切换
-        CHAT_FLOW_STATE.set_state("current_flow_node_done", self.flow_node_name)
-
+        if not self.values.get():
+            self.printer_show("您还没有开始当前流程哦~",flow_chat_messages)
+        else:
+            CHAT_FLOW_STATE.set_state("current_flow_node_done", self.flow_node_name)
