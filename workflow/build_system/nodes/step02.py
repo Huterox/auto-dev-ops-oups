@@ -65,7 +65,7 @@ class FlowNodeStep2(FlowNode):
         histroy = CHAT_FLOW_STATE.get_state("messages_step_2")
         # get_res 会将用户的输入和返回的结果都放在histroy里面的
         msg = self.agent.get_res(histroy, input_prompt)
-        # 这里需要将变量写进去
+        # 这里需要将变量写进去  （当前只是确定需求，还可以这样处理没有问题）
         self.values.set(msg)
         # 将记录写进去
         CHAT_FLOW_STATE.set_state("messages_step_2", histroy)
