@@ -256,7 +256,8 @@ class AgentStep4(FlowAgent):
         :return:
         """
         # 注意这里是单次对话，并且在这个模块里面啥都不管
-        # sys_prompt = self.__builder_system_prompt(prompt_type)
-        # res = self.singleChat(sys_prompt,input_prompt)
-        # return res
-        return "OK"
+        sys_prompt = self.__builder_system_prompt(prompt_type)
+        res = self.singleChat(sys_prompt,input_prompt)
+        # res = "ok"
+        return res
+

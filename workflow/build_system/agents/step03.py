@@ -69,8 +69,9 @@ class AgentStep3(FlowAgent):
         sys_prompt = self.__builder_system_prompt(history,input_prompt)
         # 注意当前的这个bot是没有完整的上下文记忆的，在这里使用的是singleChat，因此需要手动将结果给到
         # history当中去，但是这个给到history只是为了方便做展示记录，实际上不会参与到LLM推理当中去
-        # history = self.__build_input(history,input_prompt)
-        # res = self.singleChat(sys_prompt,input_prompt)
-        # history.append({"role": "assistant", "content": res})
-        # return res
-        return "OK"
+        history = self.__build_input(history,input_prompt)
+        res = self.singleChat(sys_prompt,input_prompt)
+        # res = "ok"
+        history.append({"role": "assistant", "content": res})
+        return res
+

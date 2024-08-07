@@ -67,7 +67,7 @@ flow_map = {
     "step05": {
         "last": "step04",
         "next": None,
-        "node": None
+        "node": flow_step05
     }
 }
 

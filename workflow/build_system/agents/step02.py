@@ -69,8 +69,9 @@ class AgentStep2(FlowAgent):
         :param input: msg
         :return:
         """
-        # sys_prompt = self.__builder_system_prompt(history,input_prompt)
-        # history = self.__build_input(history,input_prompt)
-        # res = self.muiltChat(history,sys_prompt)
-        # return res
-        return "Ok"
+        sys_prompt = self.__builder_system_prompt(history,input_prompt)
+        history = self.__build_input(history,input_prompt)
+        res = self.muiltChat(history,sys_prompt)
+        # res = "ok"
+        return res
+

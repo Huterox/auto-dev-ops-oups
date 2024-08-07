@@ -23,7 +23,7 @@ class FlowNodeStep5(FlowNode):
 
     def described_show(self):
         info = """
-        当前节点为第五个节点主要负责数据库建模🚓
+        当前节点为第五个节点主要负责协助修改系统代码🚓
         """
         sac.alert(label='节点描述',
                   description=info,
@@ -34,10 +34,10 @@ class FlowNodeStep5(FlowNode):
                   variant='transparent',
                   closable=True)
 
-    @st.experimental_dialog('变量')
+    @st.experimental_dialog('变量',width="large")
     def variable_show(self):
-        variable_show_step_5 = st.container(height=300)
-        variable_show_step_5.chat_message("assistant").write(self.values.get())
+        variable_show_step_5 = st.container(height=400)
+        variable_show_step_5.write(self.values.get())
 
     def get_index(self):
         return self.index
@@ -46,7 +46,7 @@ class FlowNodeStep5(FlowNode):
         if not CHAT_FLOW_STATE.get_state("messages_step_5"):
             CHAT_FLOW_STATE.set_state("messages_step_5",
                                       [
-                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小C🌎"}
+                                          {"role": "assistant", "content": "你好我是当前工作流的对话助手小F📃,主要负责协助修改系统代码"}
                                       ]
                                       )
             # 项目助手对话的记录
@@ -71,7 +71,7 @@ class FlowNodeStep5(FlowNode):
             full_response = ''
             for item in msg:
                 full_response += item
-                time.sleep(0.01)
+                time.sleep(0.002)
                 placeholder.markdown(full_response)
             placeholder.markdown(full_response)
             # 在这里提供切换当前bot的选项
@@ -79,13 +79,14 @@ class FlowNodeStep5(FlowNode):
             with r_001:
                 st.markdown("😊")
             with r_002:
-                st.button("next05", on_click=self.next_flow_node)
+                st.button("结束", on_click=self.next_flow_node,args=(flow_chat_messages,))
 
-    def next_flow_node(self):
+    def next_flow_node(self,flow_chat_messages):
         # 记录一下，当前的节点执行完毕
         # 如果需要切换上一个节点，那么你要找到上一个节点的上一个节点才能完成切换
         # 如果切换当前节点，则需要上一个节点
         # 如果切换下一个节点，这设置当前节点 对于 current_flow_node_done 的值
         # 当前批次的工作流，还没有涉及到节点切换
-        CHAT_FLOW_STATE.set_state("current_flow_node_done", self.flow_node_name)
+        # CHAT_FLOW_STATE.set_state("current_flow_node_done", self.flow_node_name)
+        self.printer_show("感谢您的使用，系统生成结束，请您刷新浏览器，可重新进入系统生成！",flow_chat_messages)
 
