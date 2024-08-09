@@ -21,6 +21,6 @@ else
 fi
 
 # run the command below to start the app
-streamlit run /app/main.py --port=8080
+streamlit run /app/main.py --server.port=8080
 
 

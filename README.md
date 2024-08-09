@@ -81,7 +81,7 @@ log = "error"
 - 执行指令：
 
   ```cmd
-  streamlit run main.py --port=8080
+  streamlit run /app/main.py --server.port=8080
   ```
 
 ### 🚀 Docker 快速部署

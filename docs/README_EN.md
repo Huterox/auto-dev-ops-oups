@@ -73,7 +73,7 @@ If you wish to deploy the local source code, please follow these steps:
 - Execution command:
 
   ```cmd
-  streamlit run main.py --port=8080
+streamlit run /app/main.py --server.port=8080
   ```
 
 ### 🚀 Docker Quick Deployment
