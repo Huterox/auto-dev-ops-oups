@@ -100,7 +100,7 @@ tenacity==8.4.2
 tokenizers==0.19.1
 toml==0.10.2
 toolz==0.12.1
-torch @ file:///E:/torch/torch-2.3.0%2Bcu118-cp310-cp310-win_amd64.whl#sha256=ceb81d79fc7b017f51b1613f83b878efb8974cc946631fb9cd577bbaa2873293
+torch==2.3.0
 torchaudio==2.3.0
 torchvision==0.18.0
 tornado==6.4.1
