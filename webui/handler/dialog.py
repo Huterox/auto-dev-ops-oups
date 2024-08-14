@@ -7,7 +7,7 @@
 """
 import streamlit as st
 import streamlit_antd_components as sac
-@st.experimental_dialog('提示')
+@st.dialog('提示')
 def dialog_info(info):
     sac.alert(label='label',
               description=info,

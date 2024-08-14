@@ -34,7 +34,7 @@ class FlowNodeStep2(FlowNode):
                   variant='transparent',
                   closable=True)
 
-    @st.experimental_dialog('变量',width="large")
+    @st.dialog('变量',width="large")
     def variable_show(self):
         variable_show_step_2 = st.container(height=400)
         variable_show_step_2.chat_message("assistant").write(self.values.get())

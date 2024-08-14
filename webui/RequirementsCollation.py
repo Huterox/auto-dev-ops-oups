@@ -31,7 +31,7 @@ def container_bot_write(st,container,key,value):
           placeholder.markdown(full_response)
         placeholder.markdown(full_response)
 
-@st.experimental_dialog('逻辑导图',)
+@st.dialog('逻辑导图',)
 def logic_graph():
 
     sac.alert(label='Tips',
@@ -61,7 +61,7 @@ def logic_graph():
         """)
 
 
-@st.experimental_dialog('音频解析',)
+@st.dialog('音频解析',)
 def audio_analysis(st,container_show):
     audio_analysis_container = st.container(height=300)
     with audio_analysis_container:

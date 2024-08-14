@@ -45,7 +45,7 @@ class FlowNodeStep4(FlowNode):
                   variant='transparent',
                   closable=True)
 
-    @st.experimental_dialog('变量',width="large")
+    @st.dialog('变量',width="large")
     def variable_show(self):
 
 

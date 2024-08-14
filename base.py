@@ -9,7 +9,6 @@ import os
 import shutil
 import uuid
 from datetime import datetime
-import torch
 from colorlog import ColoredFormatter
 
 current_dir_root = os.path.dirname(os.path.abspath(__file__))
@@ -117,17 +116,6 @@ def delete_file(file_path):
         print(f"An error occurred while trying to delete the file: {e}")
 
 
-def check_gpu():
-    import torch
-    cuda_available = torch.cuda.is_available()
-    print(f"CUDA 是否可用: {cuda_available}")
-    if cuda_available:
-        num_gpus = torch.cuda.device_count()
-        print(f"可用 GPU 数量: {num_gpus}")
-        for i in range(num_gpus):
-            print(f"GPU {i}: {torch.cuda.get_device_name(i)}")
-    else:
-        print("没有可用的 GPU")
 
 
 def delete_folder(folder_path):
@@ -144,11 +132,3 @@ def delete_folder(folder_path):
         print(f"Folder '{folder_path}' does not exist.")
 
 
-def is_cuda_available():
-    """
-    判断 CUDA 是否可用。
-
-    返回:
-    bool: 如果 CUDA 可用，返回 True；否则返回 False。
-    """
-    return torch.cuda.is_available()

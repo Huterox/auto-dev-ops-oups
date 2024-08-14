@@ -51,7 +51,7 @@ def show_code_linked_item_delete(select_add_delete,current_select_fileItem,show_
             st.checkbox(linked_node.name,on_change=del_link_file_item,args=(linked_node,current_select_fileItem,show_code_linked_item_tips_container,))
 
 
-@st.experimental_dialog('代码依赖关系')
+@st.dialog('代码依赖关系')
 def show_code_linked_item(current_select_fileItem):
 
     show_code_linked_item_tips_container = st.container(height=50)
@@ -97,7 +97,7 @@ def show_code_linked_item(current_select_fileItem):
             show_code_linked_item_delete(select_add_delete,current_select_fileItem,show_code_linked_item_tips_container)
 
 
-@st.experimental_dialog('添加文件扩展')
+@st.dialog('添加文件扩展')
 def add_include_file_extensions():
 
     extension_container = st.container(height=300)
@@ -117,7 +117,7 @@ def add_include_file_extensions():
             radius='lg', use_container_width=True,
         )
 
-@st.experimental_dialog('解析项目目录',)
+@st.dialog('解析项目目录',)
 def analysis_project(project_path):
 
     analysis_project_container = st.container(height=300)
