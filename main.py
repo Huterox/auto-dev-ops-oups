@@ -1,6 +1,8 @@
 import streamlit as st
 import streamlit_antd_components as sac
+import threading
 
+from base import mylogger
 from webui.ChatFlow import chatFlowUI
 from webui.Home import homeUI
 from webui.RequirementsCollation import collationUI
@@ -8,6 +10,7 @@ from webui.CodingAssistant import assistantUI
 from webui.AutoDevOps import autoUI
 from webui.SQLAssistant import sqlAssistantUI
 from webui.Search import searchUI
+from webui.handler.search.support import start_support_service
 
 st.set_page_config(
     page_title="MatchAI-智码 v0.1",
@@ -70,3 +73,10 @@ if __name__ == '__main__':
     st.markdown(custom_css, unsafe_allow_html=True)
     with st.container():
         menus_page.get(menu)()
+
+    if not st.session_state.get("open_support_service", False):
+        # 默认开启服务
+        mylogger.info("opening the support service for search")
+        t = threading.Thread(target=start_support_service)
+        t.start()
+        st.session_state["open_support_service"] = True

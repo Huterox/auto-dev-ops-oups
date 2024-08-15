@@ -85,6 +85,8 @@ def home_settings(st,config):
         new_temperature = area.slider("**Temperature：**", min_value=0.0, max_value=1.0, step=0.1,
                                       value=st.session_state.default_temperature)
         st.session_state.default_temperature = new_temperature
+        bing_api_key =area.text_input("**Bing-Api-Key：**", st.session_state.bing_api_key)
+        st.session_state.bing_api_key=bing_api_key
 
     with col2:
         area2 = st.container(height=450)
@@ -114,10 +116,12 @@ def load_config_in_state(st, config):
     default_base = config["DEFAULT"]["default_base"]
     default_model = config["DEFAULT"]["default_model"]
     default_temperature = config["DEFAULT"]["default_temperature"]
+    bing_api_key = config["DEFAULT"]["bing_api_key"]
     st.session_state.default_key = default_key
     st.session_state.default_base = default_base
     st.session_state.default_model = default_model
     st.session_state.default_temperature = default_temperature
+    st.session_state.bing_api_key = bing_api_key
 
 
 def save_config_in_state(st,config):
@@ -125,6 +129,7 @@ def save_config_in_state(st,config):
     config["DEFAULT"]["default_base"] = st.session_state.default_base
     config["DEFAULT"]["default_model"] = st.session_state.default_model
     config["DEFAULT"]["default_temperature"] = st.session_state.default_temperature
+    config["DEFAULT"]["bing_api_key"] = st.session_state.bing_api_key
     with open(os.path.join(current_dir_root, "api.toml"), 'w', encoding='utf-8') as file:
         toml.dump(config, file)
     st.toast("保存成功！", icon=":material/task_alt:")
